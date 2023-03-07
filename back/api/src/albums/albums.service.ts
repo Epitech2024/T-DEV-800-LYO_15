@@ -43,17 +43,20 @@ export class AlbumsService {
       _id: Types.ObjectId;
     })[]
   > {
-    const Albums = await this.AlbumModel.find({ userId });
-    for (const album of Albums) {
-      album.toObject();
-      const images = await Promise.all(
-        album.imgs.map(async (img: string) => {
-          return await this.imageService.findOneById(img);
-        }),
-      );
-      Object.defineProperty(album, 'images', { value: images });
-    }
-    return Albums;
+    const albums = await this.AlbumModel.aggregate([
+      {
+        $match: { userId: userId }, // Match the albums by user ID
+      },
+      {
+        $lookup: {
+          from: 'images',
+          localField: 'imgs',
+          foreignField: '_id',
+          as: 'images',
+        },
+      },
+    ]);
+    return albums;
   }
   /**
    * It takes an album id and a new name, finds the album by id, sets the name, saves the album, and

@@ -15,6 +15,14 @@ import { ImagesService } from './images.service';
 @Controller('images')
 export class ImagesController {
   constructor(private readonly ImagesService: ImagesService) {}
+  @Get('one/:id')
+  async getImagesById(@Req() request: Request, @Res() res: Response) {
+    const images = await this.ImagesService.findOneById(request.params.id);
+    if (!images) {
+      return res.status(401).send('no images Found');
+    }
+    return res.send(images);
+  }
   @Get(':id')
   async getImagesByUserId(@Req() request: Request, @Res() res: Response) {
     const images = await this.ImagesService.findOneByUserId(request.params.id);
