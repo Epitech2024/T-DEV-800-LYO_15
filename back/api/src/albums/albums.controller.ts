@@ -1,16 +1,12 @@
 import { Controller, Get, Req, Res, Post, Delete } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { ImagesService } from 'src/images/images.service';
 import { AlbumsService } from './albums.service';
 @Controller('albums')
 export class AlbumsController {
-  constructor(
-    private readonly albumsService: AlbumsService,
-    private readonly imagesService: ImagesService,
-  ) {}
+  constructor(private readonly albumsService: AlbumsService) {}
   @Get(':id')
   async getalbumsByUserId(@Req() request: Request, @Res() res: Response) {
-    const albums = await this.albumsService.findOneById(request.params.id);
+    const albums = await this.albumsService.findOneByUserId(request.params.id);
     if (albums.length === 0) {
       return res.status(401).send('no albums Found');
     } else {
@@ -19,16 +15,21 @@ export class AlbumsController {
   }
   @Post('')
   async createAlbum(@Req() request: Request, @Res() res: Response) {
+    //imageId:63fe1f17f3d7a01f38fa64b0
     const result = await this.albumsService.createAlbum(
       request.body.userId,
       request.body.name,
       [request.body.img],
       new Date(),
     );
+    if (result.includes('album')) {
+      res.status(403);
+    }
     return res.send(result);
   }
   @Post('rename')
   async renameAlbum(@Req() request: Request, @Res() res: Response) {
+    //albumId:640709ea8e305d85d21150ff
     const result = await this.albumsService.renameAlbum(
       request.body.id,
       request.body.name,
@@ -51,9 +52,9 @@ export class AlbumsController {
     );
     return res.send(result);
   }
-  @Delete('')
+  @Delete(':id')
   async deleteAlbum(@Req() request: Request, @Res() res: Response) {
-    const result = await this.albumsService.deleteAlbum(request.body.id);
+    const result = await this.albumsService.deleteAlbum(request.params.id);
     if (result) {
       res.send('deleted');
     } else {

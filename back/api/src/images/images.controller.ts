@@ -1,5 +1,6 @@
 import {
   Controller,
+  Delete,
   Get,
   Post,
   Req,
@@ -38,5 +39,12 @@ export class ImagesController {
       new Date(),
     );
     return insertImage;
+  }
+  @Delete(':imageId')
+  async deleteImagesById(@Req() request: Request, @Res() res: Response) {
+    const imageDeleted = await this.ImagesService.deleteImage(
+      request.params.imageId,
+    );
+    return res.send(imageDeleted);
   }
 }

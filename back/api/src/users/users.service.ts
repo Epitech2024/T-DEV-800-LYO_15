@@ -10,42 +10,42 @@ export class UsersService {
 
   constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
 
-  async insertUser(name: string, email: string, password: string, role: string) {
-    const newUser = new this.userModel({
-      name,
-      email,
-      password,
-      role
-    });
-    const result = await newUser.save();
-    return result.id as string;
+  async insertUser(username: string, password: string) {
+    const checkUser = await this.userModel.findOne({ username: username });
+    console.log(checkUser);
+
+    if (checkUser) {
+      return 'username already exists.';
+    } else {
+      const newUser = new this.userModel({
+        username,
+        password,
+      });
+
+      const result = await newUser.save();
+      return result.id as string;
+    }
   }
 
-  async update(id: string, name: string, email: string, password: string) {
-    const oldUser = await this.userModel.findOneAndUpdate(
-      {id: id},
+  async update(id: string, username: string, password: string) {
+    return await this.userModel.findOneAndUpdate(
+      { id: id },
       {
-          name: name,
-          email: email,
-          password: password
-      });
+        username: username,
+        password: password,
+      },
+    );
   }
 
   async delete(id: string) {
-    const res = await this.userModel.deleteOne({id: id});
-    return res;
+    return await this.userModel.deleteOne({ id: id });
   }
 
   async findOneById(id: string): Promise<User> {
-    const res = await this.userModel.findById(id);
-    return res;
+    return await this.userModel.findById(id);
   }
 
-  async findOne(name: string): Promise<User | undefined> {
-    return this.users.find(user => user.name === name);
-  }
-
-  async findOneEmail(email: string): Promise<User | undefined> {
-    return await this.userModel.findOne({email: email}).exec();
+  async findOne(username: string): Promise<User | undefined> {
+    return await this.userModel.findOne({ username: username });
   }
 }

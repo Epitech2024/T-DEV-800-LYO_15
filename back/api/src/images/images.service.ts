@@ -14,18 +14,20 @@ export class ImagesService {
     const result = await newImage.save();
     return result.id as string;
   } //papa44
+  async deleteImage(id: string) {
+    // this.albumService.
+    return await this.imageModel.findByIdAndDelete(id);
+  }
 
   async findOneByUserId(userId: string): Promise<
     (Image & {
       _id: Types.ObjectId;
     })[]
   > {
-    const res = await this.imageModel.find({ userId });
-    return res;
+    return await this.imageModel.find({ userId });
   }
 
   async findOneById(id: string): Promise<Image> {
-    const res = await this.imageModel.findById(id);
-    return res;
+    return await this.imageModel.findById(id);
   }
 }

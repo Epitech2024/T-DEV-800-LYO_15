@@ -9,7 +9,7 @@ export class AuthsController {
 
   @Post('login')
   async login(@Req() request, @Ip() ip: string, @Body() body: LoginDto) {
-    const tokens = await this.authService.login(body.email, body.password, {
+    const tokens = await this.authService.login(body.username, body.password, {
       ipAddress: ip,
       userAgent: request.headers['user-agent'],
     });
