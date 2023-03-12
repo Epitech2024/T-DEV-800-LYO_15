@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { ImagesService } from 'src/images/images.service';
-import { Album } from './albums.model';
+import { Album, albumResponse } from './albums.model';
 
 @Injectable()
 export class AlbumsService {
@@ -38,25 +38,26 @@ export class AlbumsService {
    * @returns An array of Albums with the images property added to each album.
    */
 
-  async findOneByUserId(userId: string): Promise<
-    (Album & {
-      _id: Types.ObjectId;
-    })[]
-  > {
-    const albums = await this.AlbumModel.aggregate([
-      {
-        $match: { userId: userId }, // Match the albums by user ID
-      },
-      {
-        $lookup: {
-          from: 'images',
-          localField: 'imgs',
-          foreignField: '_id',
-          as: 'images',
-        },
-      },
-    ]);
-    return albums;
+  async groupImagesByAlbum(albums: Album[]) {
+    let allAlbums: albumResponse[] = [];
+    for (let album of albums) {
+      const id = allAlbums.push({
+        id: album.id,
+        name: album.name,
+        date: album.date,
+        images: [],
+      });
+      for (let image of album.imgs) {
+        const imgData = await this.imageService.findOneById(image);
+        allAlbums[id - 1].images.push(imgData);
+      }
+    }
+    return allAlbums;
+  }
+  async findOneByUserId(userId: string): Promise<albumResponse[]> {
+    const albums = await this.AlbumModel.find({ userId });
+    const formated = await this.groupImagesByAlbum(albums);
+    return formated;
   }
   /**
    * It takes an album id and a new name, finds the album by id, sets the name, saves the album, and

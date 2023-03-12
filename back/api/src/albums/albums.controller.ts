@@ -7,7 +7,7 @@ export class AlbumsController {
   @Get(':id')
   async getalbumsByUserId(@Req() request: Request, @Res() res: Response) {
     const albums = await this.albumsService.findOneByUserId(request.params.id);
-    if (albums.length === 0) {
+    if (Object.keys(albums).length === 0) {
       return res.status(401).send('no albums Found');
     } else {
       return res.send(albums);

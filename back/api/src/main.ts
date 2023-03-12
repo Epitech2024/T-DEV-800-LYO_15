@@ -4,6 +4,9 @@ import { AppModule } from './app.module';
 import { load } from 'ts-dotenv';
 import { exec } from 'child_process';
 import { hostname } from 'os';
+import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import * as express from 'express';
 
 const env = load({
   API_SERVER_PORT: Number,
@@ -24,7 +27,10 @@ var IP = '';
 // });
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(
+    AppModule,
+    new ExpressAdapter(express()),
+  );
 
   //API Swagger
   const config = new DocumentBuilder()
@@ -43,6 +49,11 @@ async function bootstrap() {
 
   //console.log("[CASH_MANAGER] API server listening at http://localhost:" + env.API_SERVER_PORT)
   //console.log("[CASH_MANAGER] API Documentation Swagger at http://localhost:" + env.API_SERVER_PORT + "/api")
+  const corsOptions: CorsOptions = {
+    origin: 'http://localhost:4200', // the URL of your localhost
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // the HTTP methods you want to allow
+  };
+  app.enableCors(corsOptions);
 
   console.log(
     '[CASH_MANAGER] API server listening at ' + IP + ':' + env.API_SERVER_PORT,

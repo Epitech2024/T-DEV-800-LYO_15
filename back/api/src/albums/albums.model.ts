@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import { Image } from 'src/images/images.model';
 
 export const AlbumSchema = new mongoose.Schema({
   userId: { type: String, required: true },
@@ -17,4 +18,10 @@ export interface Album extends mongoose.Document {
   name: string;
   date: Date;
   imgs: string[];
+}
+export interface albumResponse {
+  id: string;
+  name: string;
+  date: Date;
+  images: Image[];
 }
