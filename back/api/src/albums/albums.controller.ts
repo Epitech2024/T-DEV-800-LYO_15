@@ -4,13 +4,14 @@ import { AlbumsService } from './albums.service';
 @Controller('albums')
 export class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) {}
-  @Get(':id')
+  /* This is a get request to get all the albums of a user with images. */
+  @Get(':userId/images')
   async getalbumsByUserIdWithImages(
     @Req() request: Request,
     @Res() res: Response,
   ) {
     const albums = await this.albumsService.findOneByUserIdWithImages(
-      request.params.id,
+      request.params.userId,
     );
     if (Object.keys(albums).length === 0) {
       return res.status(401).send('no albums Found');
@@ -18,6 +19,7 @@ export class AlbumsController {
       return res.send(albums);
     }
   }
+  /* This is a get request to get all the albums of a user. */
   @Get(':userId')
   async getalbumsByUserId(@Req() request: Request, @Res() res: Response) {
     const albums = await this.albumsService.findOneByUserId(
@@ -29,6 +31,7 @@ export class AlbumsController {
       return res.send(albums);
     }
   }
+  /* This is a post request to create an album. */
   @Post('')
   async createAlbum(@Req() request: Request, @Res() res: Response) {
     //imageId:63fe1f17f3d7a01f38fa64b0
@@ -43,6 +46,7 @@ export class AlbumsController {
     }
     return res.send(result);
   }
+  /* Renaming an album by its id. */
   @Post('rename')
   async renameAlbum(@Req() request: Request, @Res() res: Response) {
     //albumId:640709ea8e305d85d21150ff
@@ -52,6 +56,7 @@ export class AlbumsController {
     );
     return res.send(result);
   }
+  /* Adding an image to an album. */
   @Post('add')
   async addImageToAlbum(@Req() request: Request, @Res() res: Response) {
     const result = await this.albumsService.addImageToAlbum(
@@ -60,17 +65,19 @@ export class AlbumsController {
     );
     return res.send(result);
   }
+  /* Removing an image from an album. */
   @Post('remove')
   async removeImageToAlbum(@Req() request: Request, @Res() res: Response) {
     const result = await this.albumsService.removeImageFromAlbum(
       request.body.id,
-      request.body.img,
+      request.body.imgId,
     );
     return res.send(result);
   }
-  @Delete(':id')
+  /* Deleting an album by its id. */
+  @Delete(':albumId')
   async deleteAlbum(@Req() request: Request, @Res() res: Response) {
-    const result = await this.albumsService.deleteAlbum(request.params.id);
+    const result = await this.albumsService.deleteAlbum(request.params.albumId);
     if (result) {
       res.send('deleted');
     } else {

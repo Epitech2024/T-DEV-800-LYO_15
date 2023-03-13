@@ -18,7 +18,9 @@ export class ImagesService {
    */
 
   async insertImage(userId: string, name: string, img: Buffer, date: Date) {
+    console.log('newImage');
     const newImage = new this.imageModel({ userId, name, img, date });
+
     const result = await newImage.save();
     return result.id as string;
   }
