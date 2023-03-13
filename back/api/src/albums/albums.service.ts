@@ -54,10 +54,13 @@ export class AlbumsService {
     }
     return allAlbums;
   }
-  async findOneByUserId(userId: string): Promise<albumResponse[]> {
+  async findOneByUserIdWithImages(userId: string): Promise<albumResponse[]> {
     const albums = await this.AlbumModel.find({ userId });
     const formated = await this.groupImagesByAlbum(albums);
     return formated;
+  }
+  async findOneByUserId(userId: string): Promise<Album[]> {
+    return await this.AlbumModel.find({ userId });
   }
   /**
    * It takes an album id and a new name, finds the album by id, sets the name, saves the album, and

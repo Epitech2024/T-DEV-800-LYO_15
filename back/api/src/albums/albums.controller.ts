@@ -5,9 +5,25 @@ import { AlbumsService } from './albums.service';
 export class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) {}
   @Get(':id')
-  async getalbumsByUserId(@Req() request: Request, @Res() res: Response) {
-    const albums = await this.albumsService.findOneByUserId(request.params.id);
+  async getalbumsByUserIdWithImages(
+    @Req() request: Request,
+    @Res() res: Response,
+  ) {
+    const albums = await this.albumsService.findOneByUserIdWithImages(
+      request.params.id,
+    );
     if (Object.keys(albums).length === 0) {
+      return res.status(401).send('no albums Found');
+    } else {
+      return res.send(albums);
+    }
+  }
+  @Get(':userId')
+  async getalbumsByUserId(@Req() request: Request, @Res() res: Response) {
+    const albums = await this.albumsService.findOneByUserId(
+      request.params.userId,
+    );
+    if (albums.length === 0) {
       return res.status(401).send('no albums Found');
     } else {
       return res.send(albums);
