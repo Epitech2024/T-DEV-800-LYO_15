@@ -12,7 +12,7 @@ export class UsersService {
 
   async insertUser(username: string, password: string) {
     const checkUser = await this.userModel.findOne({ username: username });
-    console.log(checkUser);
+
 
     if (checkUser) {
       return 'username already exists.';

@@ -48,7 +48,7 @@ export class UsersController {
 
   @Post()
   async addUser(
-    @Body('username') username: string,
+    @Body('name') username: string,
     @Body('password') pwd: string,
   ) {
     var password = await bcrypt.hash(pwd, 12);
