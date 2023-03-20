@@ -23,19 +23,26 @@ class _PictureFrameState extends State<PictureFrame> {
             //  break;
             case ConnectionState.done:
               return Container(
-                  width: MediaQuery.of(context).size.width * (1 / 3),
+                  width: MediaQuery.of(context).size.width * 0.3,
                   height: MediaQuery.of(context).size.width * 0.3,
-                  child: Text(" "),
                   decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black, width: 1),
+                      //border: Border.all(color: Colors.black, width: 1),
                       image: DecorationImage(
-                          scale: 0.5, image: snapshot.data!.image)));
+                          scale: 0.5, image: snapshot.data!.image)),
+                  child: const Text(" "));
             case ConnectionState.waiting:
             case ConnectionState.none:
             default:
-              return const CircularProgressIndicator(
-                backgroundColor: Colors.cyanAccent,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+              return Container(
+                width: MediaQuery.of(context).size.width * (1 / 3),
+                height: MediaQuery.of(context).size.width * 0.3,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black, width: 1),
+                ),
+                child: const CircularProgressIndicator(
+                  backgroundColor: Colors.cyanAccent,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                ),
               );
           }
         });

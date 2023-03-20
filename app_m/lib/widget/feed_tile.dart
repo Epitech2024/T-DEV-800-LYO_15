@@ -35,9 +35,10 @@ class _UnloadedFeedTileState extends State<UnloadedFeedTile> {
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             //UserProfileImage
             LinearProgressIndicator(
+              minHeight: MediaQuery.of(context).size.width * (1 / 3),
               backgroundColor: Colors.grey,
               valueColor: AlwaysStoppedAnimation<Color>(
                   Color.fromARGB(255, 94, 94, 94)),

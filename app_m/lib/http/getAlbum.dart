@@ -9,7 +9,7 @@ String apiDomain = "localhost:3000";
 
 Future<List<String>> getAlbum() async {
   var client = http.Client();
-  String params = '/albums/papa44';
+  String params = '/images/papa44';
 
   try {
     var response =
@@ -18,12 +18,11 @@ Future<List<String>> getAlbum() async {
       'Authorization': '',
     });
     var decodedResponse = json.decode(response.body);
-    List<dynamic> data = decodedResponse["images"];
-    log(data.toString());
-    List<String> images = ["63fe1f17f3d7a01f38fa64b0"];
-    //for (int i = 0; i < data.length; i++) {
-    //  images.add(data[i]["_id"]);
-    //}
+    List<dynamic> data = decodedResponse;
+    List<String> images = [];
+    for (int i = 0; i < data.length; i++) {
+      images.add(data[i]["_id"]);
+    }
     client.close();
     return images;
   } catch (e) {
