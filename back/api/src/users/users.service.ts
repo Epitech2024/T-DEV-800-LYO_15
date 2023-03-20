@@ -1,19 +1,28 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { forwardRef } from '@nestjs/common/utils';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { AuthsService } from 'src/auths/auths.service';
+import { LoginDto } from 'src/auths/dto/login.dto';
 
 import { User } from './users.model';
 
 @Injectable()
 export class UsersService {
-  private users: User[] = [];
+  constructor(
+    @InjectModel('User') private readonly userModel: Model<User>,
+    @Inject(forwardRef(() => AuthsService))
+    private readonly authservice: AuthsService,
+  ) {}
 
-  constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
-
-  async insertUser(username: string, password: string) {
+  async insertUser(
+    username: string,
+    password: string,
+    ip: string,
+    useragent: string,
+  ) {
     const checkUser = await this.userModel.findOne({ username: username });
-
-
+    console.log(checkUser);
     if (checkUser) {
       return 'username already exists.';
     } else {
@@ -21,13 +30,16 @@ export class UsersService {
         username,
         password,
       });
-
-      const result = await newUser.save();
-      return result.id as string;
+      await newUser.save();
+      const token = await this.authservice.newRefreshAndAccessToken(newUser, {
+        userAgent: useragent,
+        ipAddress: ip,
+      });
+      return token;
     }
   }
 
-  async update(id: string, username: string, password: string) {
+  async update(id: string, username: string, password?: string) {
     return await this.userModel.findOneAndUpdate(
       { id: id },
       {

@@ -4,13 +4,18 @@ import { User } from '../users/users.model';
 import RefreshToken from './refresh_tokens';
 import { sign, verify } from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
+import { Inject } from '@nestjs/common/decorators';
+import { forwardRef } from '@nestjs/common/utils';
 
 @Injectable()
 export class AuthsService {
   //put thess in the db
   private refreshTokens: RefreshToken[] = [];
 
-  constructor(private readonly userService: UsersService) {}
+  constructor(
+    @Inject(forwardRef(() => UsersService))
+    private readonly userService: UsersService,
+  ) {}
 
   private retrieveRefreshToken(
     refreshStr: string,
@@ -41,19 +46,28 @@ export class AuthsService {
     return sign(accessToken, process.env.ACCESS_SECRET, { expiresIn: '15m' });
   }
 
-  private async newRefreshAndAccessToken(
+  async newRefreshAndAccessToken(
     user: User,
-    values: { userAgent: string; ipAddress: string },
+    values?: { userAgent: string; ipAddress: string },
   ): Promise<{ accessToken: string; refreshToken: string }> {
+    const userId = (await this.userService.findOne(user.username)).id;
+    const existingLogin = this.refreshTokens.find((r) => r.userId === userId);
+
     const refreshObject = new RefreshToken({
       id:
         this.refreshTokens.length === 0
           ? 0
-          : this.refreshTokens[this.refreshTokens.length - 1].id + 1,
+          : !existingLogin
+          ? this.refreshTokens[this.refreshTokens.length - 1].id + 1
+          : existingLogin.id,
       ...values,
       userId: user.id,
     });
-    this.refreshTokens.push(refreshObject);
+    if (!existingLogin) {
+      this.refreshTokens.push(refreshObject);
+    }
+    console.log(this.refreshTokens);
+
     return {
       refreshToken: refreshObject.sign(),
       accessToken: sign({ userId: user.id }, process.env.ACCESS_TOKEN, {

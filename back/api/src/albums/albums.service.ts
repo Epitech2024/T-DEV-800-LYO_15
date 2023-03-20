@@ -38,7 +38,7 @@ export class AlbumsService {
    * @returns An array of Albums with the images property added to each album.
    */
 
-  async groupImagesByAlbum(albums: Album[]) {
+  async groupImagesByAlbum(userId: string, albums: Album[]) {
     let allAlbums: albumResponse[] = [];
     for (let album of albums) {
       const id = allAlbums.push({
@@ -48,15 +48,17 @@ export class AlbumsService {
         images: [],
       });
       for (let image of album.imgs) {
-        const imgData = await this.imageService.findOneById(image);
-        allAlbums[id - 1].images.push(imgData);
+        const imgData = await this.imageService.findOneById(userId, image);
+        if (typeof imgData !== 'string') {
+          allAlbums[id - 1].images.push(imgData);
+        }
       }
     }
     return allAlbums;
   }
   async findOneByUserIdWithImages(userId: string): Promise<albumResponse[]> {
     const albums = await this.AlbumModel.find({ userId });
-    const formated = await this.groupImagesByAlbum(albums);
+    const formated = await this.groupImagesByAlbum(userId, albums);
     return formated;
   }
   async findOneByUserId(userId: string): Promise<Album[]> {

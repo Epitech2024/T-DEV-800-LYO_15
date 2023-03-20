@@ -6,8 +6,11 @@ import {
   Delete,
   UseGuards,
   Req,
+  Ip,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { Request } from 'express';
+import { LoginDto } from 'src/auths/dto/login.dto';
 import { JwtAuthGuard } from 'src/auths/jwt-auths.guard';
 import { UsersService } from './users.service';
 
@@ -16,7 +19,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get()
+  @Get('info')
   async getUserById(@Req() request) {
     const fetchedUser = await this.usersService.findOneById(
       request.user.userId,
@@ -41,21 +44,26 @@ export class UsersController {
     const response = await this.usersService.update(
       request.user.userId,
       username,
-      password,
+      /* Checking if the password is null or undefined, if it is, it will hash the password. */
+      password ? await bcrypt.hash(password, 12) : undefined,
     );
     return response;
   }
 
-  @Post()
+  @Post('register')
   async addUser(
-    @Body('name') username: string,
+    @Body('username') username: string,
     @Body('password') pwd: string,
+    @Ip() ip: string,
+    @Req() request: Request,
   ) {
     var password = await bcrypt.hash(pwd, 12);
-    const generatedUserId = await this.usersService.insertUser(
+    const generatedJWT = await this.usersService.insertUser(
       username,
       password,
+      ip,
+      request.headers['user-agent'],
     );
-    return { id: generatedUserId };
+    return generatedJWT;
   }
 }

@@ -25,9 +25,13 @@ export class ImagesService {
     return result.id as string;
   }
   //papa44
-  async deleteImage(id: string) {
-    // this.albumService.
-    return await this.imageModel.findByIdAndDelete(id);
+  async deleteImage(userId: string, id: string) {
+    const image = await this.findOneById(userId, id);
+    if (typeof image === 'string') {
+      return image;
+    } else {
+      return await image.delete();
+    }
   }
 
   async findOneByUserId(userId: string): Promise<
@@ -38,7 +42,12 @@ export class ImagesService {
     return await this.imageModel.find({ userId });
   }
 
-  async findOneById(id: string): Promise<Image> {
-    return await this.imageModel.findById(id);
+  async findOneById(userId: string, id: string): Promise<Image | string> {
+    const image = await this.imageModel.findById(id);
+    if (image.userId === userId) {
+      return image;
+    } else {
+      return 'not authorized';
+    }
   }
 }
