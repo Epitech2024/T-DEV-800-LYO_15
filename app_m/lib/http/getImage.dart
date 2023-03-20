@@ -19,7 +19,7 @@ Future<Image> getImageHttp(String _id) async {
     });
     var decodedResponse = json.decode(response.body);
     List<dynamic> data = decodedResponse["img"]["data"];
-    log(data.toString());
+
     List<int> bufferInt = data.map((e) => e as int).toList();
     client.close();
     return Image.memory(Uint8List.fromList(bufferInt));

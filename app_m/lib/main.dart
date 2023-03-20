@@ -1,7 +1,13 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:app_m/http/getAlbum.dart';
 import 'package:app_m/http/getFeed.dart';
+import 'package:app_m/http/postImage.dart';
 import 'package:app_m/widget/feed.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:app_m/http/getFeed.dart';
 
@@ -54,37 +60,40 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  ImagePicker _picker = ImagePicker();
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  Future<void> _incrementCounter() async {
+    XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    String path = image!.path;
+    File imageFile = File(path);
+
+    bool posted = await postImageHttp("papa44", imageFile);
+    if (posted == true) {
+      log("Post successful");
+    } else {
+      log("Post failed");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: const <Widget>[
-          //Stories
-          //FutureBuilder(
-          //    future: getUserStories(),
-          //    builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-          //      switch (snapshot.connectionState) {
-          //        case ConnectionState.done:
-          //          break;
-          //        case ConnectionState.waiting:
-          //        case ConnectionState.none:
-          //        default:
-          //      }
-          //    })
-        ],
-      ),
+      //appBar: AppBar(
+      //actions: const <Widget>[
+      //Stories
+      //FutureBuilder(
+      //    future: getUserStories(),
+      //    builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+      //      switch (snapshot.connectionState) {
+      //        case ConnectionState.done:
+      //          break;
+      //        case ConnectionState.waiting:
+      //        case ConnectionState.none:
+      //        default:
+      //      }
+      //    })
+      //],
+      // ),
       body: Center(
         child: FutureBuilder(
             future: getAlbum(), //remplace by getFeed
