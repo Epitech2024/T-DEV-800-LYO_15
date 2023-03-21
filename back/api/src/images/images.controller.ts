@@ -45,6 +45,17 @@ export class ImagesController {
     }
     return res.send(images);
   }
+  @UseGuards(JwtAuthGuard)
+  @Get('allIds')
+  async getImagesByUserIdByIds(@Req() request, @Res() res: Response) {
+    const images = await this.ImagesService.findOneByUserIdOnlyIds(
+      request.user.userId,
+    );
+    if (images.length === 0) {
+      return res.status(401).send('no images Found');
+    }
+    return res.send(images);
+  }
   /* This is the function that is called when the user uploads an image. */
   @UseGuards(JwtAuthGuard)
   @Post('add')

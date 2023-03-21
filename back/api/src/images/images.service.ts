@@ -41,6 +41,12 @@ export class ImagesService {
   > {
     return await this.imageModel.find({ userId });
   }
+  async findOneByUserIdOnlyIds(userId: string): Promise<string[]> {
+    const images = await this.imageModel.find({ userId });
+    return images.map((image) => {
+      return image.id;
+    });
+  }
 
   async findOneById(userId: string, id: string): Promise<Image | string> {
     const image = await this.imageModel.findById(id);

@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:flutter/services.dart' show Uint8List, rootBundle;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 String apiDomain = "localhost:3000";
@@ -10,12 +12,15 @@ String apiDomain = "localhost:3000";
 Future<Image> getImageHttp(String _id) async {
   var client = http.Client();
   String params = '/images/one/$_id';
+  print(params);
+  var api = dotenv.env['API'];
 
+  var storage = FlutterSecureStorage();
+  var token = await storage.read(key: 'jwt');
   try {
-    var response =
-        await client.get(Uri.http("192.168.122.1:3000", params), headers: {
+    var response = await client.get(Uri.http(api!, params), headers: {
       'Content-Type': 'application/json',
-      'Authorization': '',
+      'Authorization': 'Bearer ${token}',
     });
     var decodedResponse = json.decode(response.body);
     List<dynamic> data = decodedResponse["img"]["data"];

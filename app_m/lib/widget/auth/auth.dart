@@ -1,9 +1,11 @@
 import 'dart:developer';
 
+import 'package:app_m/http/getAlbum.dart';
 import 'package:app_m/widget/feed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -20,22 +22,21 @@ class _AuthPageState extends State<AuthPage> {
   bool loginIn = true;
   String name = '';
   String password = '';
-  String apiDomain = "http://172.18.253.185:3000";
+  String apiDomain = dotenv.env['API']!;
 
   @override
   Widget build(BuildContext context) {
-    void login() async {
+    Future<void> login() async {
       try {
-        Map data = {'username': name, 'password': password};
-        log(data.toString());
+        final data = json.encode({'username': name, 'password': password});
         http.Response response = await http.post(
-            Uri.parse("$apiDomain/${loginIn ? 'login' : 'register'}"),
+            Uri.parse(
+                "http://$apiDomain/${loginIn ? 'auths/login' : 'user/register'}"),
             headers: {"Content-Type": "application/json"},
             body: data);
-        print(response);
-        if (response.statusCode == 200) {
+        if (response.statusCode == 201) {
           Fluttertoast.showToast(
-            msg: "Vous êtes connecté.",
+            msg: "You are successfully connected.",
             toastLength: Toast.LENGTH_SHORT,
             timeInSecForIosWeb: 1,
             backgroundColor: Colors.green,
@@ -43,16 +44,24 @@ class _AuthPageState extends State<AuthPage> {
             fontSize: 16.0,
           );
           const storage = FlutterSecureStorage();
-          storage.write(key: "jwt", value: response.body);
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    Feed(feedList: ["63fe1f17f3d7a01f38fa64b0"])),
-          );
+          var responseBody = json.decode(response.body);
+          await storage.write(key: "jwt", value: responseBody['accessToken']);
+          try {
+            var data = await getAlbum();
+            await Navigator.pushReplacement(
+              context,
+              MaterialPageRoute<void>(
+                builder: (BuildContext context) => Feed(feedList: data),
+              ),
+            );
+          } catch (e) {
+            print(e);
+          }
+          // pushReplacement(
+          //           Feed(feedList: ["63fe1f17f3d7a01f38fa64b0"]));
         } else {
           Fluttertoast.showToast(
-            msg: "Erreur connexion",
+            msg: "Connexion error",
             toastLength: Toast.LENGTH_SHORT,
             timeInSecForIosWeb: 1,
             backgroundColor: Colors.red,
@@ -61,8 +70,9 @@ class _AuthPageState extends State<AuthPage> {
           );
         }
       } catch (e) {
+        print(e);
         Fluttertoast.showToast(
-          msg: "Erreur serveur",
+          msg: "server error",
           toastLength: Toast.LENGTH_SHORT,
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,

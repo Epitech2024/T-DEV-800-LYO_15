@@ -71,7 +71,7 @@ export class AuthsService {
     return {
       refreshToken: refreshObject.sign(),
       accessToken: sign({ userId: user.id }, process.env.ACCESS_TOKEN, {
-        expiresIn: '15m',
+        expiresIn: '1y',
       }),
     };
   }

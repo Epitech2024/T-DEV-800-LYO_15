@@ -8,7 +8,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
 class Feed extends StatefulWidget {
-  final List<String> feedList;
+  final List<dynamic> feedList;
   const Feed({super.key, required this.feedList});
 
   @override
@@ -16,7 +16,7 @@ class Feed extends StatefulWidget {
 }
 
 class _FeedState extends State<Feed> {
-  Widget feedWidgetList(List<String> imgIds) {
+  Widget feedWidgetList(List<dynamic> imgIds) {
     List<Widget> feed = [];
     int rows = ((imgIds.length / 3)).round();
     int left = imgIds.length % 3;
@@ -49,28 +49,6 @@ class _FeedState extends State<Feed> {
             : row.add(const UnloadedFeedTile());
       }
     }
-    //const FeedTile(imageId: "63fe1f17f3d7a01f38fa64b0"),
-    //const FeedTile(imageId: "63fe1f17f3d7a01f38fa64b0"),
-    //for (int ids = 0; ids < img_ids.length; ids++) {
-    //  //if (ids % 3 == 0) {
-    //  feed.add(
-    //    Row(
-    //      mainAxisAlignment: MainAxisAlignment.center,
-    //      crossAxisAlignment: CrossAxisAlignment.start,
-    //      children: [
-    //        FeedTile(imageId: img_ids[ids]),
-    //        const FeedTile(imageId: "63fe1f17f3d7a01f38fa64b0"),
-    //        const FeedTile(imageId: "63fe1f17f3d7a01f38fa64b0"),
-    //      ],
-    //    ),
-    //  );
-    //}
-    //}
-
-    //for (int i = 0; i < widget.feedList.length; i++) {
-    //  log(widget.feedList[i].characters.string);
-    //  feed.add(const FeedTile(imageId: "63fe1f17f3d7a01f38fa64b0"));
-    //}
     ListView view = ListView.builder(
         itemCount: feed.length,
         itemBuilder: (context, index) {
