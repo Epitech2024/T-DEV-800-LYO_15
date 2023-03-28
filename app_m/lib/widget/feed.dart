@@ -52,9 +52,10 @@ class _FeedState extends State<Feed> {
     ListView view = ListView.builder(
         itemCount: feed.length,
         itemBuilder: (context, index) {
-          return ListTile(
+          return Material(
+              child: ListTile(
             title: feed[index],
-          );
+          ));
         });
     return view;
   }

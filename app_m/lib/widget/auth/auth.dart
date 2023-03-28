@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:app_m/http/getAlbum.dart';
+import 'package:app_m/widget/chome_page.dart';
 import 'package:app_m/widget/feed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -26,7 +27,7 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
-    Future<void> login() async {
+    Future<bool> login() async {
       try {
         final data = json.encode({'username': name, 'password': password});
         http.Response response = await http.post(
@@ -46,19 +47,21 @@ class _AuthPageState extends State<AuthPage> {
           const storage = FlutterSecureStorage();
           var responseBody = json.decode(response.body);
           await storage.write(key: "jwt", value: responseBody['accessToken']);
-          try {
-            var data = await getAlbum();
-            await Navigator.pushReplacement(
-              context,
-              MaterialPageRoute<void>(
-                builder: (BuildContext context) => Feed(feedList: data),
-              ),
-            );
-          } catch (e) {
-            print(e);
-          }
+          return true;
+          //try {
+          //  var data = await getAlbum();
+          //  await Navigator.pushReplacement(
+          //    context,
+          //    MaterialPageRoute<void>(
+          //      builder: (BuildContext context) => Feed(feedList: data),
+          //    ),
+          //  );
+          //} catch (e) {
+          //  print(e);
+          //}
           // pushReplacement(
           //           Feed(feedList: ["63fe1f17f3d7a01f38fa64b0"]));
+
         } else {
           Fluttertoast.showToast(
             msg: "Connexion error",
@@ -82,6 +85,7 @@ class _AuthPageState extends State<AuthPage> {
       } finally {
         FocusManager.instance.primaryFocus?.unfocus();
       }
+      return false;
     }
 
     return Scaffold(
@@ -140,7 +144,17 @@ class _AuthPageState extends State<AuthPage> {
                   height: 50,
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                   child: ElevatedButton(
-                    onPressed: login,
+                    onPressed: () async {
+                      var state = await login();
+                      if (state == true) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) => const HomePage(),
+                          ),
+                        );
+                      } else {}
+                    },
                     child: Text(loginIn ? 'login' : 'Register'),
                   )),
               loginIn
