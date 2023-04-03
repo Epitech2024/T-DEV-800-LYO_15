@@ -1,15 +1,8 @@
-import 'dart:developer';
-import 'dart:io';
-
-import 'package:app_m/http/getAlbum.dart';
-import 'package:app_m/http/postImage.dart';
-import 'package:app_m/widget/auth/auth.dart';
+import 'package:app_m/widget/pages/auth.dart';
 import 'package:app_m/widget/chome_page.dart';
-import 'package:app_m/widget/feed.dart';
+import 'package:app_m/widget/pages/feed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
@@ -62,13 +55,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final TextEditingController _textFieldController = TextEditingController();
-  int _counter = 0;
-  ImagePicker _picker = ImagePicker();
-
-  String? codeDialog;
-  String? valueText;
-
   Future<bool> checkToken() async {
     const storage = FlutterSecureStorage();
     //await storage.deleteAll();

@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:app_m/http/getAlbum.dart';
 import 'package:app_m/widget/chome_page.dart';
-import 'package:app_m/widget/feed.dart';
+import 'package:app_m/widget/pages/feed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';

@@ -1,8 +1,5 @@
 import 'package:app_m/http/getImage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class PictureFrame extends StatefulWidget {
   final String id;

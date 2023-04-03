@@ -1,5 +1,5 @@
 import 'package:app_m/http/getImage.dart';
-import 'package:app_m/widget/feed.dart';
+import 'package:app_m/widget/pages/feed.dart';
 import 'package:app_m/widget/picture_frame.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
