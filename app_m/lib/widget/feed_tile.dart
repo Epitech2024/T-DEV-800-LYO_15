@@ -7,7 +7,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
 class FeedTile extends StatefulWidget {
-  final String imageId;
+  final List imageId;
   const FeedTile({super.key, required this.imageId});
 
   @override
@@ -17,7 +17,7 @@ class FeedTile extends StatefulWidget {
 class _FeedTileState extends State<FeedTile> {
   @override
   Widget build(BuildContext context) {
-    return PictureFrame(id: widget.imageId);
+    return PictureFrame(data: widget.imageId);
   }
 }
 

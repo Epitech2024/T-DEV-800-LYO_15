@@ -29,7 +29,10 @@ class _ImagesPageState extends State<ImagesPage> {
         future: getAlbum(),
         builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return Feed(feedList: snapshot.data!);
+            return Feed(
+              allImages: snapshot.data!,
+              filteredImages: [],
+            );
           } else {
             return const UnloadedFeed();
           }

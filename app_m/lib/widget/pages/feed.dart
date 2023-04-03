@@ -4,44 +4,44 @@ import 'package:app_m/widget/picture_frame.dart';
 import 'package:flutter/material.dart';
 
 class Feed extends StatefulWidget {
-  final List<dynamic> feedList;
-  const Feed({super.key, required this.feedList});
+  final List<dynamic> allImages;
+  final List<dynamic> filteredImages;
+  const Feed(
+      {super.key, required this.allImages, required this.filteredImages});
 
   @override
   State<Feed> createState() => _FeedState();
 }
 
 class _FeedState extends State<Feed> {
-  Widget feedWidgetList(List<dynamic> imgIds) {
+  Widget feedWidgetList(List<dynamic> images) {
     List<Widget> feed = [];
-    int rows = ((imgIds.length / 3)).round();
-    int left = imgIds.length % 3;
+    int rows = ((images.length / 3)).round();
+    int left = images.length % 3;
 
     if (left > 0) {
       rows++;
     }
-
     log("Rows: $rows");
-
     List<Widget> row = [];
-    for (int i = 0; i + 1 <= imgIds.length; i++) {
+    for (int i = 0; i + 1 <= images.length; i++) {
       if (((i + 1) % 3 == 0 && i != 0)) {
-        imgIds[i].isNotEmpty ? log(imgIds[i]) : log("?");
-        imgIds[i].isNotEmpty
-            ? row.add(Expanded(child: PictureFrame(id: imgIds[i])))
+        images[i].isNotEmpty
+            ? row.add(
+                Expanded(child: PictureFrame(data: images[i]["img"]["data"])))
             : row.add(const UnloadedFeedTile());
         feed.add(Row(children: row));
         row = [];
-      } else if (i + 1 == imgIds.length) {
-        imgIds[i].isNotEmpty ? log(imgIds[i]) : log("?");
-        imgIds[i].isNotEmpty
-            ? row.add(Expanded(child: PictureFrame(id: imgIds[i])))
+      } else if (i + 1 == images.length) {
+        images[i].isNotEmpty
+            ? row.add(
+                Expanded(child: PictureFrame(data: images[i]["img"]["data"])))
             : row.add(const UnloadedFeedTile());
         feed.add(Row(children: row));
       } else {
-        imgIds[i].isNotEmpty ? log(imgIds[i]) : log("?");
-        imgIds[i].isNotEmpty
-            ? row.add(Expanded(child: PictureFrame(id: imgIds[i])))
+        images[i].isNotEmpty
+            ? row.add(
+                Expanded(child: PictureFrame(data: images[i]["img"]['data'])))
             : row.add(const UnloadedFeedTile());
       }
     }
@@ -58,7 +58,9 @@ class _FeedState extends State<Feed> {
 
   @override
   Widget build(BuildContext context) {
-    return feedWidgetList(widget.feedList);
+    return feedWidgetList(widget.filteredImages.isEmpty
+        ? widget.allImages
+        : widget.filteredImages);
   }
 }
 

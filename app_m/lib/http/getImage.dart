@@ -9,24 +9,9 @@ import 'package:http/http.dart' as http;
 
 String apiDomain = "localhost:3000";
 
-Future<Image> getImageHttp(String _id) async {
-  var client = http.Client();
-  String params = '/images/one/$_id';
-  print(params);
-  var api = dotenv.env['API'];
-
-  var storage = FlutterSecureStorage();
-  var token = await storage.read(key: 'jwt');
+Future<Image> getImageHttp(List data) async {
   try {
-    var response = await client.get(Uri.http(api!, params), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${token}',
-    });
-    var decodedResponse = json.decode(response.body);
-    List<dynamic> data = decodedResponse["img"]["data"];
-
     List<int> bufferInt = data.map((e) => e as int).toList();
-    client.close();
     return Image.memory(Uint8List.fromList(bufferInt));
   } catch (e) {
     log("ERROR: " + e.toString());

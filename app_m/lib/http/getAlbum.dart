@@ -12,7 +12,7 @@ Future<List<dynamic>> getAlbum() async {
   const storage = FlutterSecureStorage();
   String? token = await storage.read(key: 'jwt');
   var client = http.Client();
-  String params = '/images/allIds';
+  String params = '/images/all';
   try {
     var response = await client.get(Uri.http(apiDomain, params), headers: {
       'Content-Type': 'application/json',

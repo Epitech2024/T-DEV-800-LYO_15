@@ -2,8 +2,8 @@ import 'package:app_m/http/getImage.dart';
 import 'package:flutter/material.dart';
 
 class PictureFrame extends StatefulWidget {
-  final String id;
-  const PictureFrame({super.key, required this.id});
+  final List data;
+  const PictureFrame({super.key, required this.data});
 
   @override
   State<PictureFrame> createState() => _PictureFrameState();
@@ -13,7 +13,7 @@ class _PictureFrameState extends State<PictureFrame> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: getImageHttp(widget.id),
+        future: getImageHttp(widget.data),
         builder: (BuildContext context, AsyncSnapshot<Image> snapshot) {
           switch (snapshot.connectionState) {
             //case ConnectionState.active:

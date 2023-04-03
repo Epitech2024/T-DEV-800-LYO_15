@@ -1,5 +1,6 @@
 import 'package:app_m/http/getAlbum.dart';
 import 'package:app_m/widget/pages/feed.dart';
+import 'package:app_m/widget/search_bar.dart';
 import 'package:flutter/material.dart';
 
 class AlbumsPage extends StatefulWidget {
@@ -11,6 +12,7 @@ class AlbumsPage extends StatefulWidget {
 
 class _AlbumsPageState extends State<AlbumsPage> {
   int _selectedIndex = 0;
+  List<dynamic> _filteredAlbum = [];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -29,7 +31,25 @@ class _AlbumsPageState extends State<AlbumsPage> {
         future: getAlbum(),
         builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return Feed(feedList: snapshot.data!);
+            return Column(children: [
+              Container(
+                child: SearchBar(
+                  images: snapshot.data!,
+                  onFilter: (filteredList) {
+                    // setState(() {
+                    //   _filteredAlbum = filteredList;
+                    // });
+                  },
+                ),
+              ),
+              Container(
+                child: Expanded(
+                    child: Feed(
+                  allImages: snapshot.data!,
+                  filteredImages: _filteredAlbum,
+                )),
+              ),
+            ]);
           } else {
             return const UnloadedFeed();
           }
