@@ -7,23 +7,20 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-Future<List<dynamic>> getAlbum() async {
+Future<List<dynamic>> getAllImages() async {
   String apiDomain = dotenv.env['API']!;
   const storage = FlutterSecureStorage();
   String? token = await storage.read(key: 'jwt');
   var client = http.Client();
-  String params = '/albums/allImages';
+  String params = '/images/all';
   try {
     var response = await client.get(Uri.http(apiDomain, params), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${token}',
     });
-    print(response);
     var decodedResponse = json.decode(response.body);
     if (decodedResponse.runtimeType != String) {
       List<dynamic> data = decodedResponse;
-      print("data");
-      print(data);
       client.close();
       return data;
     } else {

@@ -6,21 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
-class FeedTile extends StatefulWidget {
-  final List imageId;
-  const FeedTile({super.key, required this.imageId});
-
-  @override
-  State<FeedTile> createState() => _FeedTileState();
-}
-
-class _FeedTileState extends State<FeedTile> {
-  @override
-  Widget build(BuildContext context) {
-    return PictureFrame(data: widget.imageId);
-  }
-}
-
 class UnloadedFeedTile extends StatefulWidget {
   const UnloadedFeedTile({super.key});
 
@@ -37,11 +22,15 @@ class _UnloadedFeedTileState extends State<UnloadedFeedTile> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             //UserProfileImage
-            LinearProgressIndicator(
-              minHeight: MediaQuery.of(context).size.width * (1 / 3),
-              backgroundColor: Colors.grey,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                  Color.fromARGB(255, 94, 94, 94)),
+            SizedBox(
+              width: 100.0, // Adjust the width to fit your layout
+              height: 20.0,
+              child: LinearProgressIndicator(
+                backgroundColor: Colors.grey,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Color.fromARGB(255, 94, 94, 94),
+                ),
+              ),
             )
           ],
         ),

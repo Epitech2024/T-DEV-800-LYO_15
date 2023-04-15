@@ -11,40 +11,30 @@ import 'package:http/http.dart' as http;
 
 String apiDomain = "localhost:3000";
 
-Future<bool> postImageHttp(File image, String name) async {
+Future<bool> newAlbumHttp(List<String> images, String name) async {
   try {
     var storage = FlutterSecureStorage();
     var token = await storage.read(key: 'jwt');
     var api = dotenv.env['API'];
-    var request = http.MultipartRequest('POST', Uri.http(api!, "/images/add"));
     Map<String, String> headers = {
-      "Content-type": "multipart/form-data",
-      "Authorization": "Bearer ${token}"
+      "Authorization": "Bearer ${token}",
     };
-
-    // image
-    request.files.add(
-      http.MultipartFile(
-        'photo',
-        image.readAsBytes().asStream(),
-        image.lengthSync(),
-        contentType: MediaType('image', 'jpeg'),
-      ),
-    );
-    request.fields.addAll({"name": name});
-    request.headers.addAll(headers);
-    var response = await request.send();
-    var res = await response.stream.bytesToString();
+    Map<String, String> body = {"name": name, "img": images.toString()};
+    print(body);
+    var response = await http.post(Uri.parse("http://${api}/albums/new"),
+        headers: headers, body: body);
+    print(response);
+    var res = response.body;
     print(res);
     //var decodedResponse = json.decode(response);
     //List<dynamic> data = decodedResponse;
 
     return true;
   } catch (e) {
-    log("ERROR: " + e.toString());
     return false;
+    log("ERROR: " + e.toString());
   }
-  return false;
+  // return false;
   //Future<Image> payload =
   //    const Image(image: AssetImage('images/logo.png')) as Future<Image>;
 }

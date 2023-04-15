@@ -1,5 +1,7 @@
 import 'package:app_m/http/getAlbum.dart';
-import 'package:app_m/widget/addPhotoDialog.dart';
+import 'package:app_m/http/getAllImages.dart';
+import 'package:app_m/widget/addDialog.dart';
+import 'package:app_m/widget/feed_tile.dart';
 import 'package:app_m/widget/pages/feed.dart';
 import 'package:flutter/material.dart';
 
@@ -11,14 +13,6 @@ class ImagesPage extends StatefulWidget {
 }
 
 class _ImagesPageState extends State<ImagesPage> {
-  int _selectedIndex = 1;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,21 +20,24 @@ class _ImagesPageState extends State<ImagesPage> {
         title: const Text('Feed'),
       ),
       body: FutureBuilder<List<dynamic>>(
-        future: getAlbum(),
+        future: getAllImages(),
         builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return Feed(
               allImages: snapshot.data!,
-              filteredImages: [],
+              album: false,
             );
           } else {
-            return const UnloadedFeed();
+            return const UnloadedFeedTile();
           }
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          addPhotoDialog();
+          showDialog(
+            context: context,
+            builder: (context) => AddDialog(album: false),
+          );
         },
         tooltip: 'add',
         child: const Icon(Icons.add),

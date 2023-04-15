@@ -9,14 +9,28 @@ import 'package:http/http.dart' as http;
 
 String apiDomain = "localhost:3000";
 
-Future<Image> getImageHttp(List data) async {
+class ImageSelection {
+  bool isSelected;
+  Image image;
+
+  ImageSelection({
+    required this.isSelected,
+    required this.image,
+  });
+}
+
+ImageSelection getImageHttp(
+  List data,
+) {
   try {
     List<int> bufferInt = data.map((e) => e as int).toList();
-    return Image.memory(Uint8List.fromList(bufferInt));
+    return ImageSelection(
+        isSelected: false, image: Image.memory(Uint8List.fromList(bufferInt)));
   } catch (e) {
     log("ERROR: " + e.toString());
   }
-  return Image.memory(Uint8List.fromList([0]));
+  return ImageSelection(
+      isSelected: false, image: Image.memory(Uint8List.fromList([0])));
   //Future<Image> payload =
   //    const Image(image: AssetImage('images/logo.png')) as Future<Image>;
 }

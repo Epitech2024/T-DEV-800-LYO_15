@@ -1,3 +1,4 @@
+import 'package:app_m/widget/feed_tile.dart';
 import 'package:app_m/widget/pages/auth.dart';
 import 'package:app_m/widget/chome_page.dart';
 import 'package:app_m/widget/pages/feed.dart';
@@ -79,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 case ConnectionState.waiting:
                 case ConnectionState.none:
                 default:
-                  return const UnloadedFeed();
+                  return const UnloadedFeedTile();
               }
             }),
       ), // This trailing comma makes auto-formatting nicer for build methods.

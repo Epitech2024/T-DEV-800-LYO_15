@@ -23,6 +23,7 @@ export class AlbumsController {
     if (Object.keys(albums).length === 0) {
       return res.status(401).send('no albums Found');
     } else {
+      console.log(albums);
       return res.send(albums);
     }
   }
@@ -44,16 +45,19 @@ export class AlbumsController {
   @Post('new')
   async createAlbum(@Req() request, @Res() res: Response) {
     //imageId:63fe1f17f3d7a01f38fa64b0
+    const convertStringToArray = (idString: string) =>
+      idString.substring(1, idString.length - 1).split(',');
+
     const result = await this.albumsService.createAlbum(
       request.user.userId,
       request.body.name,
-      [request.body.img],
+      convertStringToArray(request.body.img),
       new Date(),
     );
     if (result.includes('album')) {
-      res.status(403);
+      res.status(403).send(false);
     }
-    return res.send(result);
+    return res.status(201).send(true);
   }
   /* Renaming an album by its id. */
   @UseGuards(JwtAuthGuard)
